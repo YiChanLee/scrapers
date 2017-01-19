@@ -1,0 +1,20 @@
+id: game id
+type: boardgame or extansion
+n_names: number of names, including primary and all alternate names
+
+mechanic: mechanisms of game
+subdomain: subdomains(type) of game
+category: categories of game
+# for full classifications of these columns please go to
+https://boardgamegeek.com/advsearch/boardgame
+
+lang_dep: votes of language dependence of game with following order
+1. No necessary in-game text
+2. Some necessary text - easily memorized or small crib sheet
+3. Moderate in-game text - needs crib sheet or paste ups
+4. Extensive use of text - massive conversion needed to be playable
+5. Unplayable in another language
+
+total_weights: total voters of weights
+
+weight: https://boardgamegeek.com/wiki/page/Weight
