@@ -57,69 +57,74 @@ def get_langdep(tag):
         return votes
 
 
-with open('ids_for_test.txt') as f:
-    ids = [line.strip() for line in f.readlines()]
+def main():
+    with open('ids_for_test.txt') as f:
+        ids = [line.strip() for line in f.readlines()]
 
-base = 'https://www.boardgamegeek.com/xmlapi/boardgame/{}&stats=1'
-split = 30
-with open('games_detail.csv', 'w') as f:
-    writer = csv.writer(f)
-    writer.writerow(('id', 'type', 'name', 'n_names', 'yearpublished',
-                     'description', 'minplayers', 'maxplayers',
-                     'playingtime', 'minplaytime', 'maxplaytime', 'minage',
-                     'mechanic', 'subdomain', 'category', 'lang_dep',
-                     'users_rated', 'average_rating', 'bayes_average_rating',
-                     'total_owners', 'total_traders', 'total_wanters',
-                     'total_wishers', 'total_comments',
-                     'total_weights', 'average_weight'))
+    base = 'https://www.boardgamegeek.com/xmlapi/boardgame/{}&stats=1'
+    split = 30
+    with open('games_detail.csv', 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(('id', 'type', 'name', 'n_names', 'yearpublished',
+                         'description', 'minplayers', 'maxplayers',
+                         'playingtime', 'minplaytime', 'maxplaytime', 'minage',
+                         'mechanic', 'subdomain', 'category', 'lang_dep',
+                         'users_rated', 'average_rating',
+                         'bayes_average_rating',
+                         'total_owners', 'total_traders', 'total_wanters',
+                         'total_wishers', 'total_comments',
+                         'total_weights', 'average_weight'))
 
-    for i in range(0, len(ids), split):
-        url = base.format(','.join(ids[i:i+split]))
-        print('Requesting {}'.format(url))
-        req = requests.get(url)
-        soup = BeautifulSoup(req.content, 'xml')
-        items = soup.find_all('boardgame')
-        for item in items:
-            gid = item.attrs['objectid']
-            if item.find('boardgameexpansion', {'inbound': 'true'}):
-                gtype = 'expansion'
-            else:
-                gtype = 'boardgame'
-            gname, num_names = get_name_info(item)
-            gyear = get_val(item, 'yearpublished')
+        for i in range(0, len(ids), split):
+            url = base.format(','.join(ids[i:i+split]))
+            print('Requesting {}'.format(url))
+            req = requests.get(url)
+            soup = BeautifulSoup(req.content, 'xml')
+            items = soup.find_all('boardgame', attrs={'inbound': False})
+            for item in items:
+                gid = item.attrs['objectid']
+                if item.find('boardgameexpansion', {'inbound': 'true'}):
+                    gtype = 'expansion'
+                else:
+                    gtype = 'boardgame'
+                gname, num_names = get_name_info(item)
+                gyear = get_val(item, 'yearpublished')
 
-            gdescript = get_val(item, 'description')
-            gmin = get_val(item, 'minplayers')
-            gmax = get_val(item, 'maxplayers')
+                gdescript = get_val(item, 'description')
+                gmin = get_val(item, 'minplayers')
+                gmax = get_val(item, 'maxplayers')
 
-            gplay = get_val(item, 'playingtime')
-            gminplay = get_val(item, 'minplaytime')
-            gmaxplay = get_val(item, 'maxplaytime')
-            gminage = get_val(item, 'age')
+                gplay = get_val(item, 'playingtime')
+                gminplay = get_val(item, 'minplaytime')
+                gmaxplay = get_val(item, 'maxplaytime')
+                gminage = get_val(item, 'age')
 
-            gmechanic = get_type(item, 'boardgamemechanic')
-            gsubdomain = get_type(item, 'boardgamesubdomain')
-            gcategory = get_type(item, 'boardgamecategory')
-            glangdep = get_langdep(item)
+                gmechanic = get_type(item, 'boardgamemechanic')
+                gsubdomain = get_type(item, 'boardgamesubdomain')
+                gcategory = get_type(item, 'boardgamecategory')
+                glangdep = get_langdep(item)
 
-            usersrated = get_val(item.statistics.ratings, 'usersrated')
-            avg = get_val(item.statistics.ratings, 'average')
-            bayesavg = get_val(item.statistics.ratings, 'bayesaverage')
+                usersrated = get_val(item.statistics.ratings, 'usersrated')
+                avg = get_val(item.statistics.ratings, 'average')
+                bayesavg = get_val(item.statistics.ratings, 'bayesaverage')
 
-            owners = get_val(item.statistics.ratings, 'owned')
-            traders = get_val(item.statistics.ratings, 'trading')
-            wanters = get_val(item.statistics.ratings, 'wanting')
-            wishers = get_val(item.statistics.ratings, 'wishing')
+                owners = get_val(item.statistics.ratings, 'owned')
+                traders = get_val(item.statistics.ratings, 'trading')
+                wanters = get_val(item.statistics.ratings, 'wanting')
+                wishers = get_val(item.statistics.ratings, 'wishing')
 
-            numcomments = get_val(item.statistics.ratings, 'numcomments')
-            numweights = get_val(item.statistics.ratings, 'numweights')
-            avgweight = get_val(item.statistics.ratings, 'averageweight')
+                numcomments = get_val(item.statistics.ratings, 'numcomments')
+                numweights = get_val(item.statistics.ratings, 'numweights')
+                avgweight = get_val(item.statistics.ratings, 'averageweight')
 
-            writer.writerow((gid, gtype, gname, num_names, gyear,
-                             gdescript, gmin, gmax,
-                             gplay, gminplay, gmaxplay, gminage,
-                             gmechanic, gsubdomain, gcategory, glangdep,
-                             usersrated, avg, bayesavg,
-                             owners, traders, wanters, wishers,
-                             numcomments, numweights, avgweight))
-        time.sleep(2)
+                writer.writerow((gid, gtype, gname, num_names, gyear,
+                                 gdescript, gmin, gmax,
+                                 gplay, gminplay, gmaxplay, gminage,
+                                 gmechanic, gsubdomain, gcategory, glangdep,
+                                 usersrated, avg, bayesavg,
+                                 owners, traders, wanters, wishers,
+                                 numcomments, numweights, avgweight))
+            time.sleep(2)
+
+if __name__ == '__main__':
+    main()
