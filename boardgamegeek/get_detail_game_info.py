@@ -58,7 +58,7 @@ def get_langdep(tag):
 
 
 def main():
-    with open('ids_for_test.txt') as f:
+    with open('ids.txt') as f:
         ids = [line.strip() for line in f.readlines()]
 
     base = 'https://www.boardgamegeek.com/xmlapi/boardgame/{}&stats=1'
