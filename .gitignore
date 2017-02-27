@@ -56,3 +56,6 @@ docs/_build/
 # PyBuilder
 target/
 .*.swp
+
+# Large data file
+boardgamegeek/games_detail.csv

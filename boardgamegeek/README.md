@@ -17,6 +17,9 @@ This file is then used by the last script.
 Run `python get_game_info.py` to retrieve all games whose IDs are in `ids.txt`.
 This data will be written to a CSV called `games.csv` and is much more detailed
 than the information contained in `items.csv`.
+Run `python get_detail_game_info.py` to retrieve more detailed information including
+n_names, description, mechanic, subdomain, category, lang_dep.
+This data will be written to a CSV called `games_detail.csv` which was around 86MB.
 Note that there are 80000+ games, so each of these steps will take some time.
 To be nice to the site, a request is made for 30 games at a time and is only made
 once every 2 seconds.
